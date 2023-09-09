@@ -28,19 +28,30 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data: Inputs) => {
-    onLogin(data.Username, data.Password)
+    onLogin(data.Username, data.Password);
   };
   const onLogin = (Username: string, Password: string) => {
-    axios({
-      method: "post",
-      url: `${url}/users/auth/`,
-      data: {
-        Username: Username,
-        Password: Password,
-      },
-    }).then(function (response: any) {
-      console.log(response);
-    });
+    axios
+      .post(`${url}/users/auth/`, {
+        username: Username,
+        password: Password,
+      })
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    // axios({
+    //   method: "post",
+    //   url: `${url}/users/auth/`,
+    //   data: {
+    //     Username: Username,
+    //     Password: Password,
+    //   },
+    // }).then(function (response: any) {
+    //   console.log(response);
+    // });
   };
 
   return (
@@ -61,10 +72,7 @@ const LoginPage = () => {
             error={errors.Password ? true : false}
           ></TextInput>
         </div>
-        <Button
-          variant="contained"
-          type="submit"
-        >
+        <Button variant="contained" type="submit">
           LOG IN
         </Button>
         {/* <input type="submit" /> */}
