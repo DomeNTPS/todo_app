@@ -2,10 +2,9 @@ import React from "react";
 import { styled } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import axios from "axios";
-import { url } from "../util/constant";
-import { AxiosPromise } from "axios";
+import axios from "../config/axios_config";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const Title = styled("h1")`
   font-size: 1.5em;
@@ -16,12 +15,14 @@ const TextInput = styled(TextField)`
   font-size: 28px;
 `;
 
-type Inputs = {
+interface Inputs {
   Username: string;
   Password: string;
-};
+}
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -32,26 +33,18 @@ const LoginPage = () => {
   };
   const onLogin = (Username: string, Password: string) => {
     axios
-      .post(`${url}/users/auth/`, {
+      .post(`/users/auth/`, {
         username: Username,
         password: Password,
       })
       .then(function (response) {
         console.log(response.data);
+        window.localStorage.setItem("token", response.data.token);
+        navigate("/listPage");
       })
       .catch(function (error) {
         console.log(error);
       });
-    // axios({
-    //   method: "post",
-    //   url: `${url}/users/auth/`,
-    //   data: {
-    //     Username: Username,
-    //     Password: Password,
-    //   },
-    // }).then(function (response: any) {
-    //   console.log(response);
-    // });
   };
 
   return (
@@ -68,6 +61,7 @@ const LoginPage = () => {
         <div>
           password
           <TextInput
+            type="password"
             {...register("Password", { required: true })}
             error={errors.Password ? true : false}
           ></TextInput>
@@ -75,7 +69,6 @@ const LoginPage = () => {
         <Button variant="contained" type="submit">
           LOG IN
         </Button>
-        {/* <input type="submit" /> */}
       </form>
     </div>
   );
