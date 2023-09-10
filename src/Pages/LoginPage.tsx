@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { styled } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -37,15 +37,21 @@ const LoginPage = () => {
         username: Username,
         password: Password,
       })
-      .then(function (response) {
-        console.log(response.data);
+      .then((response) => {
         window.localStorage.setItem("token", response.data.token);
+        axios.defaults.headers.common = { Authorization: `Bearer ${response.data.token}` };
         navigate("/listPage");
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error);
       });
   };
+  useEffect(() => {
+    const authChecked = window.localStorage.getItem("token");
+    if (authChecked) {
+      navigate("/listPage");
+    }
+  }, []);
 
   return (
     <div>

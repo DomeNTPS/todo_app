@@ -6,36 +6,39 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { DetailInterface } from "../interface";
 
 interface DialogInterface {
   open: boolean;
   handleClose: () => void;
-  onAdd: any
-}
-interface TodoAddInterface {
-  title: string;
-  description: string;
+  onAction: any;
+  isEdit: boolean;
 }
 
-const FormDialog: React.FC<DialogInterface> = ({ open, handleClose, onAdd }) => {
+const FormDialog: React.FC<DialogInterface> = ({
+  open,
+  handleClose,
+  onAction,
+  isEdit,
+}) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TodoAddInterface>();
-  const onSubmit: SubmitHandler<TodoAddInterface> = (
-    data: TodoAddInterface
-  ) => {
-    onAdd(data)
+  } = useForm<DetailInterface>();
+  const onSubmit: SubmitHandler<DetailInterface> = (data: DetailInterface) => {
+    onAction(data);
     handleClose();
   };
 
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add ToDo List</DialogTitle>
+        <DialogTitle>{isEdit ? "Edit" : "Add"}</DialogTitle>
         <DialogContent>
-          <DialogContentText>Add new thing you want to do.</DialogContentText>
+          <DialogContentText>
+            {isEdit ? "Edit your activity" : "Add new thing you want to do."}
+          </DialogContentText>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               title
@@ -52,7 +55,7 @@ const FormDialog: React.FC<DialogInterface> = ({ open, handleClose, onAdd }) => 
               ></TextField>
             </div>
             <Button variant="contained" type="submit">
-              Add
+              {isEdit ? "Update" : "Add"}
             </Button>
           </form>
         </DialogContent>
